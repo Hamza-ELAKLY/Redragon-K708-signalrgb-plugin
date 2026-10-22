@@ -38,7 +38,6 @@ SignalRGB doesn't detect the Redragon K708 Pro (the LCD one). It turns out it us
 ## Good to know
 
 - Works over the **USB cable** and the **2.4G dongle**. Bluetooth isn't supported.
-- Over the dongle, the keyboard may use a bit more battery since the lights update constantly.
 - The **screen** and **knob** keep working as normal, but SignalRGB doesn't control them.
 
 ## How to install
