@@ -26,7 +26,7 @@
   </tr>
 </table>
 
-<p align="center"><sub>All six versions are the same keyboard inside; only the colors and keycaps change (this Plugin should work on all of them) (<a href="https://fccid.io/TUVET-7156B/Letter/FCC-MODEL-DIFFERENCE-LETTER-8314657">FCC filing</a>).</sub></p>
+<p align="center"><sub>All six versions are the same keyboard inside; only the colors and keycaps change, so this plugin should work on all of them (<a href="https://fccid.io/TUVET-7156B/Letter/FCC-MODEL-DIFFERENCE-LETTER-8314657">FCC filing</a>).</sub></p>
 
 SignalRGB doesn't detect the Redragon K708 Pro (the LCD one). It turns out it uses the same EVision chip as some Redragon keyboards SignalRGB already supports, so I made a plugin for it.
 
@@ -63,11 +63,15 @@ Delete the file from the `Plugins` folder and restart SignalRGB. Nothing on your
 - [SignalRGB](https://signalrgb.com) 2.5.80
 - Windows 10
 
-The other versions (K708, K708GG, K708MC, K708GF, K708WLG) have the same internals, so they should work the same way. If you have one, let me know in an issue whether it works.
+The other versions (K708, K708GG, K708MC, K708GF, K708WLG) have the same internals, so they should work the same way. If you have one, [let me know if it works](https://github.com/Hamza-ELAKLY/Redragon-K708-signalrgb-plugin/issues/new?template=works_on_my_keyboard.yml).
 
 ## Test your keys
 
 I made a **[Key Check page](https://hamza-elakly.github.io/Redragon-K708-signalrgb-plugin/tools/key-check.html)** while testing this. Open it in your browser: it shows each key as you press it and flags any key that types twice. Try it once with SignalRGB closed and once with it running to compare.
+
+## Contributing
+
+Found a problem? [Open an issue](https://github.com/Hamza-ELAKLY/Redragon-K708-signalrgb-plugin/issues/new/choose). Want to improve the plugin? Pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
