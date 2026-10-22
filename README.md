@@ -37,7 +37,8 @@ SignalRGB doesn't detect the Redragon K708 Pro (the LCD one). It turns out it us
 
 ## Good to know
 
-- **Use the USB cable.** Lighting control doesn't work over the wireless dongle.
+- Works over the **USB cable** and the **2.4G dongle**. Bluetooth isn't supported.
+- Over the dongle, the keyboard may use a bit more battery since the lights update constantly.
 - The **screen** and **knob** keep working as normal, but SignalRGB doesn't control them.
 
 ## How to install
@@ -48,7 +49,7 @@ SignalRGB doesn't detect the Redragon K708 Pro (the LCD one). It turns out it us
    Documents\WhirlwindFX\Plugins
    ```
 3. Close Redragon's own keyboard software if it's open.
-4. Plug your keyboard in with the USB cable.
+4. Connect your keyboard with the USB cable or the 2.4G dongle.
 5. Fully close SignalRGB (right-click its tray icon → Exit), then open it again.
 
 Your keyboard now shows up in SignalRGB as **Redragon K708 Pro**.
@@ -59,7 +60,7 @@ Delete the file from the `Plugins` folder and restart SignalRGB. Nothing on your
 
 ## Tested on
 
-- Redragon K708AK-RGB-PRO (Flekact Pro, anime version), wired
+- Redragon K708AK-RGB-PRO (Flekact Pro, anime version), USB cable and 2.4G dongle
 - [SignalRGB](https://signalrgb.com) 2.5.80
 - Windows 10
 

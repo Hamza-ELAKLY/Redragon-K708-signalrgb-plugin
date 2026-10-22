@@ -1,4 +1,4 @@
-// Redragon K708 Pro (EVision 320F:511B) — SignalRGB plugin by Hamza-ELAKLY.
+// Redragon K708 Pro (EVision 320F:511B cable, 320F:511C 2.4G dongle) — SignalRGB plugin by Hamza-ELAKLY.
 // https://github.com/Hamza-ELAKLY/Redragon-K708-signalrgb-plugin
 // Based on SignalRGB's built-in EVision_Keyboard_Controller.js (WhirlwindFx & Nuonuo).
 // Same color packet protocol, unchanged; this adds the K708 Pro's product ID and LED layout.
@@ -6,7 +6,7 @@
 
 export function Name() { return "Redragon K708 Pro"; }
 export function VendorId() { return 0x320F; }
-export function ProductId() { return [0x511B]; } // wired only; the 2.4G dongle (0x511C) is not supported
+export function ProductId() { return [0x511B, 0x511C]; } // USB cable, 2.4G dongle
 export function Publisher() { return "Hamza-ELAKLY (based on WhirlwindFx & Nuonuo EVision plugin)"; }
 export function Size() { return [15, 6]; }
 export function DeviceType() { return "keyboard"; }
