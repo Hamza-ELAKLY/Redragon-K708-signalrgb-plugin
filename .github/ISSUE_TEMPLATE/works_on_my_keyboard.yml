@@ -1,0 +1,29 @@
+name: It works on my keyboard
+description: Confirm the plugin works on your K708 version, so others know
+labels: [confirmed working]
+body:
+  - type: dropdown
+    id: model
+    attributes:
+      label: Keyboard version
+      description: The model is printed on the sticker under the keyboard.
+      options:
+        - K708-RGB-PRO (Black)
+        - K708AK-RGB-PRO (Anime)
+        - K708GG-RGB-PRO (Gradient)
+        - K708MC-RGB-PRO (Black & White)
+        - K708GF-RGB-PRO (Cartoon)
+        - K708WLG-RGB-PRO (White)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: signalrgb
+    attributes:
+      label: SignalRGB version
+      placeholder: e.g. 2.5.80
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else?
+      description: Optional. A photo of it running is always welcome.

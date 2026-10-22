@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Test your keys
+    url: https://hamza-elakly.github.io/Redragon-K708-signalrgb-plugin/tools/key-check.html
+    about: Check for keys that type twice before reporting a key problem.

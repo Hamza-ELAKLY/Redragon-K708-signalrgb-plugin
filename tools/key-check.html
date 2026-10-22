@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>K708 Pro Key Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of panels; the 75% keyboard is the centerpiece, A/B typing runs below it. */
+:root {
+  --bg: #f3f5f8;
+  --panel: #ffffff;
+  --line: #d9dee6;
+  --fg: #16202c;
+  --muted: #5b6676;
+  --accent: #0a6f94;
+  --accent-soft: #dcf0f7;
+  --cap: #eef1f5;
+  --cap-edge: #c5ccd6;
+  --ok: #1d7a46;
+  --ok-soft: #dcf2e4;
+  --warn: #9a5b00;
+  --warn-soft: #fbecd2;
+  --bad: #b3261e;
+  --bad-soft: #f9dedc;
+  --font-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141b; --panel: #161d26; --line: #273241; --fg: #e4e9f0; --muted: #93a0b2;
+    --accent: #4cc3ea; --accent-soft: #143444; --cap: #1e2733; --cap-edge: #323f50;
+    --ok: #5fd08e; --ok-soft: #173826; --warn: #f0b44c; --warn-soft: #3a2c12; --bad: #ff8a80; --bad-soft: #42201d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141b; --panel: #161d26; --line: #273241; --fg: #e4e9f0; --muted: #93a0b2;
+  --accent: #4cc3ea; --accent-soft: #143444; --cap: #1e2733; --cap-edge: #323f50;
+  --ok: #5fd08e; --ok-soft: #173826; --warn: #f0b44c; --warn-soft: #3a2c12; --bad: #ff8a80; --bad-soft: #42201d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0;
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 20px; }
+h1, h2 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.2rem; }
+p { margin: 0; max-width: 68ch; }
+.muted { color: var(--muted); }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+header { display: grid; gap: 6px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 16px; min-width: 0; }
+.panel-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+
+.focus-banner { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); font-weight: 500; }
+.focus-banner.live { background: var(--ok-soft); color: var(--ok); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; flex: none; }
+
+/* Keyboard: 16 units wide, each unit = 4 grid columns so 1.25u / 1.75u / 2.25u keys line up. */
+.kb-scroll { overflow-x: auto; padding-bottom: 4px; }
+.kb { display: grid; grid-template-columns: repeat(64, minmax(0, 1fr)); gap: 4px; min-width: 560px; padding: 12px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); }
+.key {
+  height: 46px; border-radius: 6px; background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 3px;
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
+  display: flex; align-items: flex-start; justify-content: flex-start; padding: 5px 6px; position: relative;
+  min-width: 0; overflow: hidden; white-space: nowrap;
+  transition: background 80ms, transform 60ms;
+}
+.key.seen { border-color: var(--ok); color: var(--fg); }
+.key.down { background: var(--accent); color: var(--bg); border-color: var(--accent); transform: translateY(2px); }
+.key.chatter { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+.key.nosignal { border-style: dashed; opacity: 0.7; }
+.key .badge { position: absolute; right: 4px; bottom: 3px; font-size: 0.65rem; font-weight: 500; color: var(--warn); }
+.screen { min-width: 0; overflow: hidden; height: 46px; border-radius: 6px; border: 1px solid var(--cap-edge); background: repeating-linear-gradient(135deg, var(--cap) 0 6px, var(--panel) 6px 12px); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); }
+.knob { height: 46px; width: 46px; max-width: 100%; justify-self: center; border-radius: 50%; border: 1px solid var(--cap-edge); background: radial-gradient(circle at 35% 35%, var(--panel), var(--cap)); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stat { display: grid; gap: 2px; padding: 12px 14px; border-radius: 8px; background: var(--bg); }
+.stat b { font-family: var(--font-display); font-size: 1.5rem; font-variant-numeric: tabular-nums; font-weight: 600; }
+.stat span { font-size: 0.8rem; color: var(--muted); }
+.stat.flag b { color: var(--warn); }
+.stat.good b { color: var(--ok); }
+
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button {
+  font: 500 0.9rem var(--font-body); padding: 8px 14px; border-radius: 7px; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--bg);
+}
+button.ghost { background: transparent; color: var(--accent); }
+button:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+
+.log { font-family: var(--font-mono); font-size: 0.78rem; background: var(--bg); border-radius: 8px; padding: 10px 12px; min-height: 9.5em; display: grid; gap: 2px; align-content: start; overflow-x: auto; }
+.log .w { color: var(--warn); }
+.chatter-list { font-family: var(--font-mono); font-size: 0.8rem; color: var(--warn); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.extra { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+
+.runs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.run { border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.run.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.run h3 { margin: 0; font: 600 1rem var(--font-display); }
+.passage { font-family: var(--font-mono); font-size: 0.95rem; line-height: 1.7; padding: 12px; border-radius: 8px; background: var(--bg); overflow-wrap: anywhere; }
+.passage .done { color: var(--ok); }
+.passage .wrong { color: var(--bad); text-decoration: underline; }
+.passage .cur { border-left: 2px solid var(--accent); margin-left: -1px; }
+.passage .todo { color: var(--muted); }
+
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.table-scroll { overflow-x: auto; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+th { font-weight: 600; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+td.num { font-family: var(--font-mono); }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.idle { background: var(--bg); color: var(--muted); }
+.verdict { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 8px; background: var(--bg); }
+
+ul.guide { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72ch; }
+@media (prefers-reduced-motion: reduce) { .key { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Redragon K708 Pro · EVision 320F:511B</div>
+    <h1>K708 Pro Key Check</h1>
+    <p class="muted">Find out whether the SignalRGB plugin affects your keys. Do one typing run with SignalRGB closed and one with it running, then compare the results.</p>
+  </header>
+
+  <div class="focus-banner" id="focus"><span class="dot"></span><span id="focusText">Click anywhere on this page so it can read your keys.</span></div>
+
+  <section class="panel" aria-labelledby="live-h">
+    <div class="panel-head">
+      <h2 id="live-h">Live key monitor</h2>
+      <div class="row">
+        <span class="muted" id="coverage">0 / 80 keys pressed</span>
+        <button class="ghost" id="resetLive" type="button">Reset monitor</button>
+      </div>
+    </div>
+    <p class="muted">Press every key once. Each one should turn green. Orange keys sent a double press when you pressed once. Fn sends nothing to Windows, so it's skipped.</p>
+    <div class="kb-scroll"><div class="kb" id="kb" aria-label="Keyboard layout"></div></div>
+    <div class="stats">
+      <div class="stat" id="st-chatter"><b>0</b><span>Double presses (chatter)</span></div>
+      <div class="stat" id="st-missed"><b>0</b><span>Missed key releases</span></div>
+      <div class="stat" id="st-hold"><b>0</b><span>Keys held over 2 s</span></div>
+      <div class="stat" id="st-presses"><b>0</b><span>Total presses</span></div>
+    </div>
+    <div class="chatter-list" id="chatterList"></div>
+    <div class="log" id="log" aria-live="polite"><span class="muted">Key events show up here with their timing.</span></div>
+    <div class="extra" id="extra"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="ab-h">
+    <div class="panel-head">
+      <h2 id="ab-h">A/B typing test</h2>
+      <span class="muted">Type normally. Backspace is off, so leave mistakes as they are.</span>
+    </div>
+    <div class="runs">
+      <div class="run" id="run-A">
+        <h3>Run A · SignalRGB closed</h3>
+        <p class="muted">Quit SignalRGB from the tray first, so the plugin isn't sending anything.</p>
+        <div class="row"><button type="button" data-start="A">Start run A</button><span class="pill idle" data-status="A">Not run</span></div>
+      </div>
+      <div class="run" id="run-B">
+        <h3>Run B · SignalRGB running</h3>
+        <p class="muted">Open SignalRGB with a moving effect on the keyboard, such as a rainbow wave.</p>
+        <div class="row"><button type="button" data-start="B">Start run B</button><span class="pill idle" data-status="B">Not run</span></div>
+      </div>
+    </div>
+    <div class="passage" id="passage" aria-label="Text to type"></div>
+    <div class="row">
+      <button class="ghost" type="button" id="finish" disabled>Finish run now</button>
+      <span class="muted" id="runInfo">Pick a run to start. Your first keystroke starts the timer.</span>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Measure</th><th>Run A · closed</th><th>Run B · running</th><th>What it means</th></tr></thead>
+        <tbody id="results"></tbody>
+      </table>
+    </div>
+    <div class="verdict" id="verdict"><span class="pill idle">Waiting</span><p class="muted">Do both runs to get a comparison.</p></div>
+  </section>
+
+  <section class="panel" aria-labelledby="guide-h">
+    <h2 id="guide-h">Reading the results</h2>
+    <ul class="guide">
+      <li><b>Double presses</b> are two presses of the same key less than 60 ms apart. Human fingers can't do that, so it's the switch or the keyboard's chip. If run B has more than run A, set the plugin's <b>Packet size</b> to 24.</li>
+      <li><b>Missed key releases</b> mean a key went down a second time with no release in between. That's a dropped event, the clearest sign the chip is overloaded.</li>
+      <li><b>Extra and dropped characters</b> in the typing test show doubled or lost keystrokes in normal use. One or two can be your own typing, so only a clear jump from A to B matters.</li>
+      <li>This page can't measure true input lag in milliseconds, because a browser only sees when Windows delivers the key. If B feels sluggish even with clean numbers, turn on <b>Low frame-rate mode</b> and try packet size 24.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(() => {
+  // [label, code, width in units]; code null = no LED / no signal; "SCREEN"/"KNOB" are decorative.
+  const ROWS = [
+    [["Esc","Escape",1],["F1","F1",1],["F2","F2",1],["F3","F3",1],["F4","F4",1],["F5","F5",1],["F6","F6",1],["F7","F7",1],["F8","F8",1],["F9","F9",1],["F10","F10",1],["F11","F11",1],["F12","F12",1],["LCD","SCREEN",2],["","KNOB",1]],
+    [["`","Backquote",1],["1","Digit1",1],["2","Digit2",1],["3","Digit3",1],["4","Digit4",1],["5","Digit5",1],["6","Digit6",1],["7","Digit7",1],["8","Digit8",1],["9","Digit9",1],["0","Digit0",1],["-","Minus",1],["=","Equal",1],["Backspace","Backspace",2],["Del","Delete",1]],
+    [["Tab","Tab",1.5],["Q","KeyQ",1],["W","KeyW",1],["E","KeyE",1],["R","KeyR",1],["T","KeyT",1],["Y","KeyY",1],["U","KeyU",1],["I","KeyI",1],["O","KeyO",1],["P","KeyP",1],["[","BracketLeft",1],["]","BracketRight",1],["\\","Backslash",1.5],["PgUp","PageUp",1]],
+    [["Caps","CapsLock",1.75],["A","KeyA",1],["S","KeyS",1],["D","KeyD",1],["F","KeyF",1],["G","KeyG",1],["H","KeyH",1],["J","KeyJ",1],["K","KeyK",1],["L","KeyL",1],[";","Semicolon",1],["'","Quote",1],["Enter","Enter",2.25],["PgDn","PageDown",1]],
+    [["Shift","ShiftLeft",2.25],["Z","KeyZ",1],["X","KeyX",1],["C","KeyC",1],["V","KeyV",1],["B","KeyB",1],["N","KeyN",1],["M","KeyM",1],[",","Comma",1],[".","Period",1],["/","Slash",1],["Shift","ShiftRight",1.75],["↑","ArrowUp",1],["End","End",1]],
+    [["Ctrl","ControlLeft",1.25],["Win","MetaLeft",1.25],["Alt","AltLeft",1.25],["Space","Space",6.25],["Alt","AltRight",1],["Fn",null,1],["Ctrl","ControlRight",1],["←","ArrowLeft",1],["↓","ArrowDown",1],["→","ArrowRight",1]],
+  ];
+  const CHATTER_MS = 60, HOLD_MS = 2000;
+  const PASSAGE = "the quick brown fox jumps over the lazy dog 1234567890 pack my box with five dozen liquor jugs";
+
+  const $ = (s) => document.querySelector(s);
+  const kb = $("#kb");
+  const keyEls = new Map();
+  const knownCodes = new Set();
+
+  ROWS.forEach((row) => {
+    row.forEach(([label, code, w]) => {
+      const span = Math.round(w * 4);
+      let el;
+      if (code === "SCREEN") { el = document.createElement("div"); el.className = "screen"; el.textContent = label; }
+      else if (code === "KNOB") { el = document.createElement("div"); el.className = "knob"; el.title = "Knob"; }
+      else {
+        el = document.createElement("div");
+        el.className = "key" + (code ? "" : " nosignal");
+        el.textContent = label;
+        if (code) { keyEls.set(code, el); knownCodes.add(code); }
+        else el.title = "Fn is handled inside the keyboard and never reaches Windows";
+      }
+      el.style.gridColumn = `span ${span}`;
+      kb.appendChild(el);
+    });
+  });
+
+  // ---------- live monitor ----------
+  const live = { seen: new Set(), down: new Map(), lastDown: new Map(), chatter: 0, missed: 0, holds: 0, presses: 0, extra: new Set(), chatterKeys: new Map(), chatterEvents: [] };
+  const logLines = [];
+
+  function log(text, warn) {
+    logLines.unshift({ text, warn });
+    logLines.length = Math.min(logLines.length, 9);
+    $("#log").innerHTML = logLines.map((l) => `<div class="${l.warn ? "w" : ""}">${l.text}</div>`).join("");
+  }
+
+  function setStat(id, value, flagWhenAbove0) {
+    const el = $(id);
+    el.querySelector("b").textContent = value;
+    el.classList.toggle("flag", flagWhenAbove0 && value > 0);
+  }
+
+  function renderLive() {
+    setStat("#st-chatter", live.chatter, true);
+    setStat("#st-missed", live.missed, true);
+    setStat("#st-hold", live.holds, true);
+    setStat("#st-presses", live.presses, false);
+    const total = keyEls.size;
+    const covered = [...live.seen].filter((c) => knownCodes.has(c)).length;
+    $("#coverage").textContent = `${covered} / ${total} keys pressed`;
+    $("#chatterList").textContent = live.chatterEvents.length ? `Double presses so far: ${live.chatterEvents.join(" · ")}` : "";
+    $("#extra").textContent = live.extra.size ? `Other keys seen (not on this layout): ${[...live.extra].join(", ")}` : "";
+  }
+
+  function resetLive() {
+    live.seen.clear(); live.down.clear(); live.lastDown.clear(); live.extra.clear(); live.chatterKeys.clear();
+    live.chatter = live.missed = live.holds = live.presses = 0;
+    live.chatterEvents = [];
+    keyEls.forEach((el) => { el.classList.remove("seen", "down", "chatter"); el.querySelector(".badge")?.remove(); });
+    logLines.length = 0;
+    $("#log").innerHTML = '<span class="muted">Key events show up here with their timing.</span>';
+    renderLive();
+  }
+
+  const MODIFIERS = new Set(["ShiftLeft","ShiftRight","ControlLeft","ControlRight","AltLeft","AltRight","MetaLeft","MetaRight","CapsLock"]);
+
+  function onDown(e) {
+    const code = e.code || e.key;
+    if (e.repeat) return; // Windows auto-repeat while holding, not a new press
+    const now = performance.now();
+    const el = keyEls.get(code);
+
+    if (live.down.has(code)) {
+      live.missed++; bump(run, "missed");
+      log(`${code}: pressed again with no release in between (missed release)`, true);
+    }
+    const prev = live.lastDown.get(code);
+    if (prev !== undefined && now - prev < CHATTER_MS) {
+      live.chatter++; bump(run, "chatter");
+      const n = (live.chatterKeys.get(code) || 0) + 1;
+      live.chatterKeys.set(code, n);
+      if (el) {
+        el.classList.add("chatter");
+        let b = el.querySelector(".badge");
+        if (!b) { b = document.createElement("span"); b.className = "badge"; el.appendChild(b); }
+        b.textContent = `×${n}`;
+      }
+      log(`${code}: second press ${Math.round(now - prev)} ms after the first (chatter)`, true);
+      live.chatterEvents.push(`${code.replace(/^Key|^Digit/, "")} ${Math.round(now - prev)} ms`);
+    }
+    live.lastDown.set(code, now);
+    live.down.set(code, now);
+    live.presses++;
+    live.seen.add(code);
+    if (!knownCodes.has(code)) live.extra.add(code);
+    if (el) el.classList.add("down", "seen");
+    renderLive();
+  }
+
+  function onUp(e) {
+    const code = e.code || e.key;
+    const now = performance.now();
+    const start = live.down.get(code);
+    live.down.delete(code);
+    keyEls.get(code)?.classList.remove("down");
+    if (start === undefined) return;
+    const held = now - start;
+    if (held > HOLD_MS && !MODIFIERS.has(code)) {
+      live.holds++; bump(run, "holds");
+      log(`${code}: held ${(held / 1000).toFixed(1)} s. Fine if you meant to hold it, a stuck key if not`, true);
+    } else {
+      log(`${code}: held ${Math.round(held)} ms`);
+    }
+    renderLive();
+  }
+
+  // Win/Alt-Tab and similar can steal the release; forget held keys when focus leaves.
+  function clearDown() {
+    live.down.clear();
+    keyEls.forEach((el) => el.classList.remove("down"));
+  }
+
+  // ---------- A/B runs ----------
+  const runs = { A: null, B: null };
+  let run = null; // { id, typed, start, end, chatter, missed, holds }
+
+  function bump(r, field) { if (r && r.start !== null && !r.end) r[field]++; }
+
+  function renderPassage() {
+    const typed = run ? run.typed : "";
+    let html = "";
+    for (let i = 0; i < PASSAGE.length; i++) {
+      const ch = PASSAGE[i] === " " ? "&nbsp;" : PASSAGE[i];
+      if (i < typed.length) html += `<span class="${typed[i] === PASSAGE[i] ? "done" : "wrong"}">${ch}</span>`;
+      else if (i === typed.length && run && !run.end) html += `<span class="cur todo">${ch}</span>`;
+      else html += `<span class="todo">${ch}</span>`;
+    }
+    if (typed.length > PASSAGE.length) html += `<span class="wrong">${typed.slice(PASSAGE.length)}</span>`;
+    $("#passage").innerHTML = html;
+  }
+
+  function startRun(id) {
+    run = { id, typed: "", start: null, end: null, chatter: 0, missed: 0, holds: 0 };
+    document.querySelectorAll(".run").forEach((el) => el.classList.toggle("active", el.id === `run-${id}`));
+    $(`[data-status="${id}"]`).className = "pill warn";
+    $(`[data-status="${id}"]`).textContent = "Typing";
+    $("#finish").disabled = false;
+    $("#runInfo").textContent = `Run ${id}: start typing the text above.`;
+    renderPassage();
+  }
+
+  function finishRun() {
+    if (!run || run.start === null) return;
+    run.end = performance.now();
+    run.diff = compare(PASSAGE, run.typed);
+    runs[run.id] = run;
+    $(`[data-status="${run.id}"]`).className = "pill ok";
+    $(`[data-status="${run.id}"]`).textContent = "Done";
+    $(`[data-start="${run.id}"]`).textContent = `Redo run ${run.id}`;
+    document.querySelectorAll(".run").forEach((el) => el.classList.remove("active"));
+    $("#finish").disabled = true;
+    $("#runInfo").textContent = runs.A && runs.B ? "Both runs done. See the comparison below." : `Run ${run.id} saved. Now do the other run.`;
+    renderPassage();
+    run = null;
+    renderResults();
+  }
+
+  function typeChar(e) {
+    if (!run || run.end) return;
+    if (e.key.length !== 1 || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (run.start === null) run.start = performance.now();
+    run.typed += e.key.toLowerCase();
+    renderPassage();
+    if (run.typed.length >= PASSAGE.length) finishRun();
+  }
+
+  // Edit-distance alignment: extra chars (doubles), dropped chars, and wrong chars.
+  function compare(target, typed) {
+    const n = target.length, m = typed.length;
+    const d = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+    for (let i = 0; i <= n; i++) d[i][0] = i;
+    for (let j = 0; j <= m; j++) d[0][j] = j;
+    for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (target[i - 1] === typed[j - 1] ? 0 : 1));
+    }
+    let i = n, j = m, extra = 0, doubled = 0, dropped = 0, wrong = 0;
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && d[i][j] === d[i - 1][j - 1] + (target[i - 1] === typed[j - 1] ? 0 : 1)) {
+        if (target[i - 1] !== typed[j - 1]) wrong++;
+        i--; j--;
+      } else if (j > 0 && d[i][j] === d[i][j - 1] + 1) {
+        extra++;
+        if (typed[j - 1] === typed[j - 2] || typed[j - 1] === typed[j]) doubled++;
+        j--;
+      } else { dropped++; i--; }
+    }
+    return { extra, doubled, dropped, wrong };
+  }
+
+  function stats(r) {
+    if (!r) return null;
+    const secs = Math.max(0.001, (r.end - r.start) / 1000);
+    return {
+      wpm: Math.round((r.typed.length / 5) / (secs / 60)),
+      doubled: r.diff.doubled,
+      dropped: r.diff.dropped,
+      wrong: r.diff.wrong,
+      chatter: r.chatter,
+      missed: r.missed,
+    };
+  }
+
+  const MEASURES = [
+    ["chatter", "Double presses", "Same key twice within 60 ms. Should be 0 in both."],
+    ["missed", "Missed releases", "Dropped key-up events. Should be 0 in both."],
+    ["doubled", "Doubled letters", "A letter typed twice that you only pressed once."],
+    ["dropped", "Dropped letters", "Letters that never arrived."],
+    ["wrong", "Wrong letters", "Mostly your own typos. Ignore unless B is far worse."],
+    ["wpm", "Speed (WPM)", "For context only."],
+  ];
+
+  function renderResults() {
+    const a = stats(runs.A), b = stats(runs.B);
+    $("#results").innerHTML = MEASURES.map(([k, label, hint]) =>
+      `<tr><td>${label}</td><td class="num">${a ? a[k] : "–"}</td><td class="num">${b ? b[k] : "–"}</td><td class="muted">${hint}</td></tr>`).join("");
+
+    const v = $("#verdict");
+    if (!a || !b) {
+      v.innerHTML = '<span class="pill idle">Waiting</span><p class="muted">Do both runs to get a comparison.</p>';
+      return;
+    }
+    const hard = (b.chatter - a.chatter) + (b.missed - a.missed);
+    const soft = (b.doubled - a.doubled) + (b.dropped - a.dropped);
+    if (hard > 0) {
+      v.innerHTML = '<span class="pill warn">Check settings</span><p>Run B had double presses or missed releases that run A didn\'t. In SignalRGB, set the plugin\'s <b>Packet size</b> to 24 with <b>Low frame-rate mode</b> on, then redo run B.</p>';
+    } else if (soft >= 3) {
+      v.innerHTML = '<span class="pill warn">Borderline</span><p>No hardware glitches, but run B lost or doubled a few more letters. That can be normal typing variation. Redo both runs. If B is worse again, try packet size 24.</p>';
+    } else {
+      v.innerHTML = '<span class="pill ok">Looks clean</span><p>With SignalRGB running, the keyboard behaved the same as with it closed. The plugin isn\'t affecting your input at these settings.</p>';
+    }
+  }
+
+  // ---------- wiring ----------
+  window.addEventListener("keydown", (e) => {
+    // Keep the browser from acting on keys being tested (scrolling, find, tab focus, F-keys).
+    if (!(e.ctrlKey && ["KeyC", "KeyV"].includes(e.code))) e.preventDefault();
+    onDown(e);
+    typeChar(e);
+  });
+  window.addEventListener("keyup", (e) => { e.preventDefault(); onUp(e); });
+  window.addEventListener("blur", () => { clearDown(); updateFocus(); });
+  window.addEventListener("focus", updateFocus);
+  document.addEventListener("click", updateFocus);
+
+  function updateFocus() {
+    const has = document.hasFocus();
+    $("#focus").classList.toggle("live", has);
+    $("#focusText").textContent = has ? "Listening for keys. Press anything." : "Click anywhere on this page so it can read your keys.";
+  }
+
+  document.querySelectorAll("[data-start]").forEach((btn) => btn.addEventListener("click", (e) => { startRun(btn.dataset.start); btn.blur(); }));
+  $("#finish").addEventListener("click", (e) => { finishRun(); e.currentTarget.blur(); });
+  $("#resetLive").addEventListener("click", (e) => { resetLive(); e.currentTarget.blur(); });
+
+  renderLive();
+  renderPassage();
+  renderResults();
+  updateFocus();
+  setInterval(updateFocus, 1000);
+})();
+</script>
+</body>
+</html>
