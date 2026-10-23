@@ -11,7 +11,7 @@ export function Publisher() { return "Hamza-ELAKLY (based on WhirlwindFx & Nuonu
 export function Size() { return [15, 6]; }
 export function DeviceType() { return "keyboard"; }
 export function Validate(endpoint) { return endpoint.interface === 1; }
-export function ImageUrl() { return "https://assets.signalrgb.com/devices/brands/redragon/keyboards/k580.png"; }
+export function ImageUrl() { return "https://cdn.shopify.com/s/files/1/0655/1289/8735/files/K708-F4.png?v=1735965955&width=512"; }
 /* global
 shutdownColor:readonly
 LightingMode:readonly
