@@ -32,10 +32,10 @@ export function ControllableParameters() {
 // Visual layout: 81 keys, 15 columns x 6 rows. The LCD and knob sit right of F12 and have no LEDs.
 const vLedNames = [
 	"Esc", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
-	"`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-_", "=+", "Backspace", "Del",
-	"Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\", "PgUp",
-	"CapsLock", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Enter", "PgDn",
-	"Left Shift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "Right Shift", "Up Arrow", "End",
+	"`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-_", "=+", "Backspace", "Insert",
+	"Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\", "Del",
+	"CapsLock", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Enter", "PgUp",
+	"Left Shift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "Right Shift", "Up Arrow", "PgDn",
 	"Left Ctrl", "Left Win", "Left Alt", "Space", "Right Alt", "Fn", "Right Ctrl", "Left Arrow", "Down Arrow", "Right Arrow",
 ];
 
@@ -48,14 +48,14 @@ const vLedPositions = [
 	[0, 5], [1, 5], [2, 5],                         [6, 5],                 [9, 5], [10, 5], [11, 5], [12, 5], [13, 5], [14, 5],
 ];
 
-// LED index per key: 15 slots per row, confirmed on hardware with a row-color test.
+// LED index per key: 16 slots per row, confirmed on hardware with a row-color test.
 const vLeds = [
 	0,   1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12,
-	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-	30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
-	45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,     58, 59,
-	60,     62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
-	75, 76, 77,             81,         84, 85, 86, 87, 88, 89,
+	16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+	32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,
+	48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,     61, 62,
+	64,     66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78,
+	80, 81, 82,             86,         89, 90, 91, 92, 93, 94,
 ];
 
 export function Initialize() {
@@ -75,7 +75,7 @@ export function Shutdown(SystemSuspending) {
 }
 
 function sendColors(overrideColor) {
-	const RGBData = new Array(90 * 3).fill(0);
+	const RGBData = new Array(95 * 3).fill(0);
 
 	for (let iIdx = 0; iIdx < vLeds.length; iIdx++) {
 		let color;
