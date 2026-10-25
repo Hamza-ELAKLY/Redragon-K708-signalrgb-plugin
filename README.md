@@ -67,7 +67,7 @@ The other versions (K708, K708GG, K708MC, K708GF, K708WLG) have the same interna
 
 ## Test your keys
 
-I made a **[Key Check page](https://hamza-elakly.github.io/Redragon-K708-signalrgb-plugin/tools/key-check.html)** while testing this. Open it in your browser: it shows each key as you press it and flags any key that types twice. Try it once with SignalRGB closed and once with it running to compare.
+Open **[Key Check page](https://hamza-elakly.github.io/Redragon-K708-signalrgb-plugin/tools/key-check.html)** while testing this. it shows each key as you press it and flags any key that types twice. Try it once with SignalRGB closed and once with it running to compare.
 
 ## Contributing
 
