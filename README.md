@@ -38,6 +38,7 @@ SignalRGB doesn't detect the Redragon K708 Pro (the LCD one). It turns out it us
 ## Good to know
 
 - Works over the **USB cable** and the **2.4G dongle**. Bluetooth isn't supported.
+- Over the **2.4G dongle**, lighting updates about 10 times a second, so fast effects trail a little behind. That's the dongle's limit: sending faster scrambles the colors. For smooth effects, use the cable.
 - The **screen** and **knob** keep working as normal, but SignalRGB doesn't control them.
 
 ## How to install
